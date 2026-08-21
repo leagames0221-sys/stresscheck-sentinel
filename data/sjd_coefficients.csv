@@ -1,0 +1,43 @@
+# UNVERIFIED placeholder — THIS FILE INTENTIONALLY CONTAINS NO DATA ROWS.
+# verified: no
+#
+# what is missing: 仕事のストレス判定図 (job stress assessment diagram) の斜線が表す
+#   健康リスク値の回帰係数。量-コントロール判定図 (A) と職場の支援判定図 (B) の
+#   それぞれについて、4 尺度平均点から健康リスク (全国平均=100) を算出する式の係数。
+#
+# what we DO have, verified from primary sources:
+#   - 使用する12項目と得点化の向き: 「各項目には、そうだ=4点、まあそうだ=3点、
+#     ややちがう=2点、ちがう=1点、あるいは非常に=4点、かなり=3点、多少=2点、
+#     全くない=1点を与えることに注意します」
+#     出典: 厚生労働省 ストレスチェック制度実施マニュアル (docs/evidence/manual_main.pdf p.86)
+#     -> 尺度得点 = 3項目について (5 - 回答値) の合計。実装は packs/jsq/group.py。
+#   - 総合した健康リスクの合成式: 「総合した健康リスク［=(A)x(B)/100］」
+#     出典: 同マニュアル p.87 図 / 東京医科大学 職業性ストレス簡易調査票マニュアル
+#           (docs/evidence/tmu_manual2.pdf p.15)
+#   - 男女別に判定図が用意されていること、性別不明時は男性の判定図を用いること、
+#     10人未満の集団では作成しないこと (同マニュアル p.86 / tmu_manual2.pdf p.7)
+#
+# what we do NOT have: 斜線そのものの数値式。上記いずれの一次資料も図版として
+#   掲載しているだけで、係数表を載せていない (実測: manual_main.pdf 204頁および
+#   tmu_manual2.pdf 32頁のテキスト全文に回帰係数・算出式の記載なし)。
+#   東京医科大学公衆衛生学分野の配布ページ (https://www.tmu-ph.ac/news/stress_table.php)
+#   にある解説PDF (explanation.pdf) にも係数の記載は無かった。係数を含みうるのは
+#   同ページで配布されている実行プログラム一式 (bjsq.zip) だが、実行可能物を
+#   取得・展開しての抽出は本プロジェクトの取得方針の範囲外としたため未取得。
+#
+# consequence (意図的な設計):
+#   packs/jsq/group.py は 4 尺度の平均点までを返し、risk_a / risk_b / total_risk は
+#   None を返す。GroupResult.coefficients_verified は False。
+#   対応するテストは pytest.skip(reason="係数一次資料未取得") でスキップする。
+#   -> もっともらしい数値を書けば全ての計算が「通って」しまうが、それは
+#      出力の正しさを主題にしたツールとして最悪の失敗である。数値は発明しない。
+#
+# how to complete this file: 係数の一次資料を入手したら、下のヘッダ行に続けて
+#   データ行を追加し、`# verified: no` を `# verified: yes` に変え、出典を
+#   `# source:` として明記する。ローダはデータ行の有無で verified を判定するので
+#   コード変更は不要。テストの skip も自動的に外れる。
+#
+# columns: chart=a|b (a=量-コントロール判定図 / b=職場の支援判定図) / sex=m|f /
+#          term=intercept|quantitative_load|control|supervisor_support|coworker_support /
+#          coefficient=係数
+chart,sex,term,coefficient
