@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>実施者レビュー — stresscheck-sentinel</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <header>
+      <div class="inner">
+        <h1>実施者レビュー</h1>
+        <p>
+          高ストレス判定と危機シグナルの確認画面（実施者＝医師等が使用します）。
+          この画面はローカルホストからのみ開けます。
+        </p>
+        <nav>
+          <a href="/">受検</a>
+          <a href="/review">実施者レビュー</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>オーバーライド率と件数</h2>
+        <div class="kpi" id="kpi">読み込み中です…</div>
+        <p class="hint">
+          オーバーライド率＝approve 以外の決定の割合。0 に近い値は「よく確認されている」
+          という意味ではなく、確認が形骸化しつつある兆しかもしれない値として見ます。
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>確認する人</h2>
+        <label class="field" for="actor">実施者ID（役割名でも可）</label>
+        <input id="actor" type="text" autocomplete="off" placeholder="例: implementer-a" />
+        <p class="hint">記録に残ります。空欄のままでは決定できません。</p>
+      </section>
+
+      <div id="status" class="status hidden"></div>
+
+      <section class="card">
+        <h2>未確認のキュー</h2>
+        <div id="pending">読み込み中です…</div>
+      </section>
+
+      <section class="card">
+        <h2>抜き取り監査（決定済みから再現可能に抽出）</h2>
+        <div class="actions">
+          <label class="field" for="sample-seed">シード</label>
+          <input id="sample-seed" type="text" autocomplete="off" placeholder="例: 2026-08" />
+          <button id="sample" class="secondary" type="button">抽出する</button>
+        </div>
+        <p class="hint">
+          同じシードなら同じ標本が出ます。抽出の理由をあとから説明できることが目的です。
+        </p>
+        <div id="sample-result"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        本画面の内容は個人が特定できる形で外部へ送信されません。判定の確認は実施者が行い、
+        確認の記録は追記のみの監査ログに残ります。
+      </p>
+    </footer>
+
+    <script src="/static/review.js"></script>
+  </body>
+</html>

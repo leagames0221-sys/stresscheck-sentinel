@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ストレスチェック受検 — stresscheck-sentinel</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <header>
+      <div class="inner">
+        <h1>ストレスチェック受検</h1>
+        <p>職業性ストレス簡易調査票（stresscheck-sentinel / ローカル動作・外部送信なし）</p>
+        <nav>
+          <a href="/">受検</a>
+          <a href="/review">実施者レビュー</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- 常設の開示。生成文が出た時だけでなく、本人向け画面には必ず出す (R4-3) -->
+      <section class="disclosure">
+        <strong>この画面についてのお知らせ</strong>
+        セルフケアの案内文は、設定によっては AI が生成した文章になります。生成された場合は、
+        文中にその旨を必ず記載します。いずれの場合も、この画面の内容は
+        <strong>医学的な診断ではありません</strong>。判定の確認は実施者（医師等）が行います。
+        つらいと感じるときは、画面下部の相談窓口をご利用いただけます。
+      </section>
+
+      <form id="survey">
+        <section class="card">
+          <h2>受検の設定</h2>
+          <label class="field" for="variant">調査票</label>
+          <select id="variant" name="variant">
+            <option value="57">57項目版</option>
+            <option value="23">23項目版（簡略版）</option>
+          </select>
+          <p class="hint">
+            変更すると設問を読み込み直します。回答済みの内容は破棄されます。
+          </p>
+
+          <label class="field" for="token-seed">受検コード</label>
+          <input
+            id="token-seed"
+            name="token-seed"
+            type="text"
+            autocomplete="off"
+            placeholder="事業場から配布されたコード（未入力なら自動発行）"
+          />
+          <p class="hint">
+            氏名・社員番号・メールアドレスは入力しないでください。入力されたコードは
+            ハッシュ化してから保存され、コードそのものは保存されません。
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>設問</h2>
+          <div id="items">読み込み中です…</div>
+        </section>
+
+        <section class="card">
+          <h2>自由記述（任意）</h2>
+          <label class="field" for="free-text">いま気になっていること</label>
+          <textarea id="free-text" name="free-text"></textarea>
+          <p class="hint">
+            入力された文章そのものは保存しません。安全確認のための自動的な判定結果と、
+            文章のハッシュ値だけを記録します。
+          </p>
+        </section>
+
+        <div id="status" class="status hidden"></div>
+
+        <div class="actions">
+          <button id="submit" type="submit">回答を送信する</button>
+        </div>
+      </form>
+    </main>
+
+    <footer>
+      <p id="hotlines">相談窓口を読み込み中です…</p>
+      <p>
+        このツールは医療機器ではありません。疾病の可能性や発症のしやすさを示す機能は
+        ありません。
+      </p>
+    </footer>
+
+    <script src="/static/form.js"></script>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>受検結果 — stresscheck-sentinel</title>
+    <link rel="stylesheet" href="/static/app.css" />
+  </head>
+  <body>
+    <header>
+      <div class="inner">
+        <h1>受検結果</h1>
+        <p>職業性ストレス簡易調査票（stresscheck-sentinel / ローカル動作・外部送信なし）</p>
+        <nav>
+          <a href="/">受検</a>
+          <a href="/review">実施者レビュー</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- 常設の開示。状態にかかわらず出す (R4-3) -->
+      <section class="disclosure">
+        <strong>この画面についてのお知らせ</strong>
+        セルフケアの案内文は、設定によっては AI が生成した文章になります。生成された場合は、
+        文中にその旨を必ず記載します。いずれの場合も、この画面の内容は
+        <strong>医学的な診断ではありません</strong>。判定の確認は実施者（医師等）が行います。
+      </section>
+
+      <section id="crisis" class="crisis hidden">
+        <h2>相談できる窓口があります</h2>
+        <p id="crisis-headline"></p>
+        <table>
+          <thead>
+            <tr>
+              <th>窓口</th>
+              <th>電話</th>
+              <th>受付時間</th>
+            </tr>
+          </thead>
+          <tbody id="crisis-hotlines"></tbody>
+        </table>
+        <p class="hint" id="crisis-note"></p>
+      </section>
+
+      <div id="status" class="status">読み込み中です…</div>
+
+      <section class="card">
+        <h2>受検コード（控え）</h2>
+        <p class="mono" id="token"></p>
+        <p class="hint">
+          この画面をもう一度開くときに使います。氏名や社員番号は保存していません。
+        </p>
+      </section>
+
+      <section id="notice-card" class="card hidden">
+        <h2>結果のご案内</h2>
+        <div class="notice-text" id="notice"></div>
+        <p class="hint" id="notice-source"></p>
+      </section>
+
+      <section id="notes-card" class="card hidden">
+        <h2>この結果の取り扱い</h2>
+        <ul id="notes"></ul>
+      </section>
+
+      <div class="actions">
+        <button id="reload" class="secondary" type="button">最新の状態を確認する</button>
+      </div>
+    </main>
+
+    <footer>
+      <p id="hotlines"></p>
+      <p>
+        このツールは医療機器ではありません。疾病の可能性や発症のしやすさを示す機能は
+        ありません。
+      </p>
+    </footer>
+
+    <script src="/static/result.js"></script>
+  </body>
+</html>

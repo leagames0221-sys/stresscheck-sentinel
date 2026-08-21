@@ -1,0 +1,300 @@
+/* System fonts only. A webfont would need a network request, and the whole
+   product is built so that there are none. */
+
+:root {
+  --ink: #1c2530;
+  --ink-soft: #556170;
+  --line: #d5dce4;
+  --paper: #ffffff;
+  --wash: #f4f6f9;
+  --accent: #1f5f8b;
+  --warn-bg: #fff4e5;
+  --warn-line: #d99b34;
+  --crisis-bg: #fdecec;
+  --crisis-line: #b03a3a;
+  --ok-bg: #eef6ef;
+  --ok-line: #3f7a4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0 0 4rem;
+  background: var(--wash);
+  color: var(--ink);
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+main,
+header .inner {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+header {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+}
+
+header h1 {
+  font-size: 1.15rem;
+  margin: 0 0 0.25rem;
+}
+
+header p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+nav a {
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin-right: 1rem;
+}
+
+/* The standing disclosure. Present on every respondent-facing screen, not
+   only when generated text happens to be shown (R4-3). */
+.disclosure {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-line);
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.disclosure strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.crisis {
+  background: var(--crisis-bg);
+  border: 1px solid var(--crisis-line);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.crisis h2 {
+  margin-top: 0;
+  font-size: 1rem;
+  color: var(--crisis-line);
+}
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.card h2 {
+  font-size: 1rem;
+  margin-top: 0;
+}
+
+fieldset {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0;
+  padding: 1rem 0 0.5rem;
+}
+
+fieldset:first-of-type {
+  border-top: none;
+}
+
+legend {
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0;
+}
+
+.item {
+  padding: 0.6rem 0;
+  border-bottom: 1px dotted var(--line);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item .q {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.item .no {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  margin-right: 0.5rem;
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+}
+
+.choices label {
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+label.field {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+}
+
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font: inherit;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.hint {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  margin: 0.35rem 0 0;
+}
+
+button {
+  font: inherit;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: var(--paper);
+  color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.notice-text {
+  white-space: pre-wrap;
+  background: var(--wash);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 1rem;
+  font-size: 0.95rem;
+}
+
+.status {
+  font-size: 0.9rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 3px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  margin-bottom: 1rem;
+}
+
+.status.ok {
+  background: var(--ok-bg);
+  border-color: var(--ok-line);
+}
+
+.status.warn {
+  background: var(--warn-bg);
+  border-color: var(--warn-line);
+}
+
+.status.error {
+  background: var(--crisis-bg);
+  border-color: var(--crisis-line);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+th {
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+
+.kpi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.kpi div {
+  min-width: 6rem;
+}
+
+.kpi .value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.kpi .label {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.mono {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.85rem;
+}
+
+footer {
+  max-width: 46rem;
+  margin: 2rem auto 0;
+  padding: 1rem 1.25rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+
+.hidden {
+  display: none;
+}
