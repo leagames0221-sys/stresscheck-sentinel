@@ -1,0 +1,72 @@
+# ---------------------------------------------------------------------------
+# Track 1: private / never-publish paths
+# Nothing under these paths is ever committed, even if it looks harmless.
+# ---------------------------------------------------------------------------
+.claude/
+.tmp/
+tmp/
+notes/private/
+private/
+secrets/
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+*_secret*
+*_token*
+
+# Local databases: HITL / audit stores may contain respondent tokens.
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Primary-source PDFs (37MB of freely redistributable government publications).
+# Kept out of git for size; pinned by sha256 in docs/evidence/SOURCES.md instead.
+docs/evidence/*.pdf
+
+# Local eval outputs / model caches
+.promptfoo/
+evals/.cache/
+evals/out/
+
+# Internal working plan (task breakdown): not a published deliverable.
+docs/spec/tasks.md
+
+# ---------------------------------------------------------------------------
+# Track 2: ordinary build / tooling noise
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+node_modules/
+package-lock.json
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

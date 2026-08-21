@@ -1,0 +1,10 @@
+# LF in the repository and in every checkout, regardless of the contributor's
+# core.autocrlf. Line endings are not a matter of local taste here: the CSVs
+# under data/ are parsed, hashed and cited, and a checkout that silently
+# rewrites them would change their bytes without changing their content.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.pdf binary
+*.zip binary

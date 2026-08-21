@@ -1,0 +1,93 @@
+# Continuous integration.
+#
+# GitHub-hosted runners only, and only first-party actions (`checkout`,
+# `setup-python`). Nothing here needs a licence key, a marketplace subscription
+# or a paid tier: a repository whose subject is "no account, no API key, no paid
+# service" would be a poor place to put one.
+#
+# Three jobs rather than one, so that a failure names itself: a red `secrets`
+# job means something was committed that should not have been, and that is a
+# different conversation from a failing test.
+
+name: ci
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Show that the runtime dependency set is empty
+        # ADR-0002. If this ever prints a package, a dependency was added
+        # without an ADR and the claim on the README stops being true.
+        run: |
+          python - <<'PY'
+          import tomllib, pathlib
+          data = tomllib.loads(pathlib.Path("pyproject.toml").read_text(encoding="utf-8"))
+          deps = data["project"]["dependencies"]
+          print("runtime dependencies:", deps)
+          raise SystemExit(0 if deps == [] else 1)
+          PY
+      - name: Test
+        run: python -m pytest -q
+      - name: Deterministic evals (no node, no Ollama)
+        # R5-4 / F2: the deterministic eval layers gate every push. They need
+        # neither node (promptfoo) nor a running Ollama, so they belong in CI —
+        # the README's "evals run on every push" claim is true only if they do.
+        run: python evals/run_deterministic.py
+
+  lint:
+    name: ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install "ruff>=0.6"
+      - name: Lint
+        run: python -m ruff check .
+      - name: Format
+        run: python -m ruff format --check .
+
+  secrets:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: a credential removed in the last commit is still a
+          # leaked credential.
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pre-commit
+        run: python -m pip install pre-commit
+      - name: Scan for secrets
+        # The same hook, pinned to the same revision, that runs locally on
+        # commit — so CI cannot disagree with the developer's machine.
+        run: pre-commit run gitleaks --all-files
+      - name: Check private paths
+        run: pre-commit run private-path-check --all-files

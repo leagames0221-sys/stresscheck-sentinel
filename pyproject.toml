@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stresscheck-sentinel"
+version = "0.1.0"
+description = "Deterministic scoring core + AI governance layer (gates / HITL / evals) for the Japanese statutory workplace stress check"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "leagames0221-sys" }]
+keywords = ["stress-check", "occupational-health", "ai-governance", "hitl", "evals"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: Japanese",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+# Runtime dependencies are intentionally empty (stdlib only).
+# See docs/adr/ADR-0002. Adding a runtime dependency requires a new ADR.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+sentinel = "sentinel.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/leagames0221-sys/stresscheck-sentinel"
+Source = "https://github.com/leagames0221-sys/stresscheck-sentinel"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sentinel"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"data" = "sentinel/_data"
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "data", "tests", "docs", "README.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra"
+filterwarnings = ["error"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # bugbear
+    "SIM",  # simplify
+    "TID",  # tidy-imports (layering)
+    "RUF",
+]
+ignore = [
+    "RUF001",  # ambiguous unicode char in string (Japanese text is expected)
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# Boundary rule (design.md section 2): core must not know about packs.
+"sentinel.packs".msg = "Layering violation: core/ must not import from packs/."
+
+[tool.ruff.lint.per-file-ignores]
+# The banned-api rule above is a layering rule for core/ only. Everything else
+# is allowed (and expected) to import from packs/.
+"tests/*" = ["E501", "TID251"]
+"src/sentinel/packs/*" = ["TID251"]
+"src/sentinel/app/*" = ["TID251"]
+"src/sentinel/cli.py" = ["TID251"]
+# evals/ sits outside the package and calls the product from the outside, which
+# is the direction the layering rule is protecting, not the direction it bans.
+# Stated once here rather than as a per-line noqa in five files, so that the
+# exemption is reviewable in one place and cannot silently spread.
+"evals/*" = ["TID251"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["sentinel"]
