@@ -1,0 +1,77 @@
+# source: 当プロジェクトによる自作の日本語タクソノミ。段階の切り方は qiuhuachuan/PsyGUARD (MIT) の判定木 — 希死念慮の「探索 -> 意図 -> 計画 -> 準備」段階分け — を日本語表現へ写像したもの。原典のタクソノミ語彙そのものは中国語であり再配布していない。参照: docs/evidence/PRIOR_ART_REPORT_2026-08-21.md §採用ひな形「危機判定木」 / license: MIT (本リポジトリのコードと同一)
+# purpose: 自由記述に危機シグナルが出た時、LLM 生成へ渡さずに決定論で hotlines_ja.csv の固定応答へ分岐させる。安全判定を LLM に委ねないための前段分類器のデータ。
+# levels (深刻な順): prepared > plan > ideation > explore > none
+#   explore  : 自殺・希死念慮を一般的な話題として言及している段階
+#   ideation : 本人の希死念慮そのもの (死にたい・消えたい)
+#   plan     : 方法・場所・時期の具体的記述
+#   prepared : 道具の準備・遺書・身辺整理など実行準備の記述
+# classify rule (packs/crisis/classify.py が実装する判定):
+#   1. kind=keyword は部分一致、kind=regex は正規表現一致。
+#   2. 複数レベルに当たった場合は最も深刻なレベルを返す。
+#   3. kind=negation は、直前/直後に隣接して一致した場合に限りその一致を打ち消す (「死にたいと思ったことはない」型)。
+#      打ち消しは同一箇所にのみ効く。文中に別の独立した signal があればそちらが生きる。
+#   4. level != none なら呼び出し側は LLM を bypass し hotlines_ja.csv の固定文を返す。判定を LLM に再確認させない。
+# columns: id / level=explore|ideation|plan|prepared|negation / kind=keyword|regex|negation / value / note
+id,level,kind,value,note
+X001,explore,keyword,自殺対策,一般的言及
+X002,explore,keyword,自殺予防,一般的言及
+X003,explore,keyword,自殺報道,一般的言及
+X004,explore,keyword,自殺という,一般的言及
+X005,explore,keyword,自殺について,一般的言及
+X006,explore,keyword,自殺率,一般的言及
+X007,explore,keyword,希死念慮,臨床用語としての言及
+I001,ideation,keyword,死にたい,本人の希死念慮
+I002,ideation,keyword,死んでしまいたい,本人の希死念慮
+I003,ideation,keyword,消えたい,本人の希死念慮
+I004,ideation,keyword,消えてしまいたい,本人の希死念慮
+I005,ideation,keyword,いなくなりたい,本人の希死念慮
+I006,ideation,keyword,生きているのがつらい,本人の希死念慮
+I007,ideation,keyword,生きていたくない,本人の希死念慮
+I008,ideation,keyword,生きる意味がない,本人の希死念慮
+I009,ideation,keyword,楽になりたい,文脈依存だが希死念慮の常套表現
+I010,ideation,keyword,自分なんていない方がいい,本人の希死念慮
+I011,ideation,keyword,この世からいなくなりたい,本人の希死念慮
+I012,ideation,keyword,目が覚めなければいい,本人の希死念慮
+I013,ideation,keyword,自殺したい,本人の希死念慮
+I014,ideation,keyword,死ぬしかない,本人の希死念慮
+I015,ideation,regex,"死[ねぬ](ば|たら)(いい|楽)?",本人の希死念慮 (「死ねたら」「死ねばいい」等。末尾の いい/楽 は任意で「いっそ死ねたら」「死ねたらと思う」も捕捉)
+I016,ideation,keyword,しにたい,本人の希死念慮 (ひらがな表記ゆれ)
+I017,ideation,keyword,シニタイ,本人の希死念慮 (カタカナ表記ゆれ)
+I018,ideation,keyword,shinitai,本人の希死念慮 (ローマ字表記)
+I019,ideation,keyword,kill myself,本人の希死念慮 (英語表現)
+I020,ideation,keyword,きえたい,本人の希死念慮 (ひらがな表記ゆれ)
+I021,ideation,regex,"(もう|全部|人生|何もかも|すべて|全て|命|自分|疲れ)[^。!?]{0,6}(?<!仕事を)(?<!会議を)(?<!電話を)(?<!作業を)(?<!授業を)終わりにしたい",婉曲だが実行意図を伴う希死念慮 (「もう終わりにしたい」「もう疲れた、終わりにしたい」等。直前が物事を終える対象語 (仕事/会議/電話/作業/授業) の場合は前置語があっても非該当 = 「もう電話を終わりにしたい」「疲れたので仕事を終わりにしたい」は none)
+I027,ideation,regex,"(^|(もう|全部|人生|何もかも|すべて|全て|命|自分|疲れ)[^。!?]{0,4})(?<!仕事を)(?<!会議を)(?<!電話を)(?<!作業を)(?<!授業を)終わりにしよう",意志形の希死念慮 (「終わりにしよう」「もう終わりにしよう」「人生を終わりにしよう」。文頭単独か希死念慮の前置語がある時のみ発火し、物事を終える対象語 (仕事/会議/電話/作業/授業) が直前の「仕事/会議/電話を終わりにしよう」や前置語なしの「そろそろ終わりにしよう」は非該当)
+I022,ideation,keyword,消えてなくなりたい,本人の希死念慮 (婉曲)
+I023,ideation,regex,"(朝|明日)が来(なけれ|ない|なかっ)",受動的希死念慮の婉曲
+I024,ideation,regex,"[居い]なくなりたい",本人の希死念慮 (漢字/かな表記ゆれ)
+I025,ideation,keyword,生きるのがつらい,本人の希死念慮 (自然文・生きているのがつらい I006 の表記差)
+I028,ideation,keyword,いなくなってしまいたい,本人の希死念慮 (婉曲・消えてしまいたい I004 / いなくなりたい I005 の複合形。I024 「[居い]なくなりたい」は なくなって…たい 形を捕捉しないため追加)
+I026,ideation,keyword,生きるのが苦しい,本人の希死念慮 (自然文・苦しい変種)
+P001,plan,keyword,飛び降り,方法の具体記述
+P002,plan,keyword,首を吊,方法の具体記述
+P003,plan,keyword,練炭,方法の具体記述
+P004,plan,keyword,踏切,場所の具体記述
+P005,plan,keyword,線路に,場所の具体記述
+P006,plan,keyword,大量に飲,方法の具体記述
+P007,plan,keyword,飛び込も,方法の具体記述
+P008,plan,regex,"(今夜|今晩|明日|明後日|今週末|来週)\s*[^。!?]{0,12}(死ぬ|死のう|終わりにする|決行)",時期の具体記述
+P009,plan,regex,"(方法|やり方)を\s*(調べ|検索し|探し)",方法の探索
+P010,plan,keyword,決行,時期の具体記述
+R001,prepared,keyword,遺書,実行準備
+R002,prepared,keyword,遺言を書,実行準備
+R003,prepared,keyword,身辺整理,実行準備
+R004,prepared,keyword,荷物を整理,実行準備
+R005,prepared,keyword,薬をため,道具の準備
+R006,prepared,keyword,ロープを買,道具の準備
+R007,prepared,keyword,刃物を用意,道具の準備
+R008,prepared,keyword,最後のメッセージ,実行準備
+R009,prepared,regex,"(準備|用意)は\s*(でき(た|ました)|整(った|いました)|終わ)",実行準備 (丁寧形「できました」「整いました」も含む)
+R010,prepared,regex,"ロープ[^。!?]{0,4}買",道具の準備 (表記ゆれ)
+R011,prepared,regex,"(手紙|メッセージ|メモ|書き置き)[^。!?]{0,6}書き(終え|上げ|まし)",実行準備 (最後の手紙・表記ゆれ)
+N001,negation,negation,と思ったことはない,打ち消し
+N002,negation,negation,とは思わない,打ち消し
+N003,negation,negation,わけではない,打ち消し
+N004,negation,negation,ほどではない,打ち消し
+N005,negation,negation,ニュースで見た,第三者の話題であることを示す
+N006,negation,negation,記事を読んだ,第三者の話題であることを示す

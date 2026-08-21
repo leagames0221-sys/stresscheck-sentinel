@@ -1,0 +1,9 @@
+# source: 厚生労働省「まもろうよ こころ」 https://www.mhlw.go.jp/mamorouyokokoro/ (2026-08-21 参照・電話番号と受付時間は同ページ記載を転記) / license: 公共データ利用規約(第1.0版) PDL1.0 (CC BY 4.0 互換) 出典: 厚生労働省
+# note: 危機シグナル検知時に LLM 生成を bypass して提示する固定応答の原本。ここに無い窓口を生成文に出させない。
+# note: 受付時間は変わりうる。fetched_on を見て定期的に原典と突き合わせること。
+# columns: id / name=窓口名 / phone=主番号 / alt_phone=IP電話等の代替番号(なければ空) / hours=受付時間 / scope=対象 / url=案内ページ / fetched_on=原典参照日
+id,name,phone,alt_phone,hours,scope,url,fetched_on
+H001,#いのちSOS,0120-061-338,,月曜日～日曜日 00:00～24:00（毎日24時間）,全国・年齢制限なし,https://www.mhlw.go.jp/mamorouyokokoro/,2026-08-21
+H002,よりそいホットライン,0120-279-338,050-3655-0279,24時間対応,全国（一部地域に専用回線あり・原典ページを参照）,https://www.mhlw.go.jp/mamorouyokokoro/,2026-08-21
+H003,いのちの電話（フリーダイヤル）,0120-783-556,03-6634-7830,毎日16時から21時まで／毎月10日は午前8時から翌日午前8時まで,全国,https://www.mhlw.go.jp/mamorouyokokoro/,2026-08-21
+H004,こころの健康相談統一ダイヤル,0570-064-556,,相談対応の曜日・時間は都道府県によって異なります,発信地の都道府県・政令指定都市の相談窓口へ接続,https://www.mhlw.go.jp/mamorouyokokoro/,2026-08-21
