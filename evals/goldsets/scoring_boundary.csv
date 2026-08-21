@@ -1,0 +1,60 @@
+# source: 期待値は 厚生労働省「数値基準に基づいて『高ストレス者』を選定する方法」(docs/evidence/select_num.pdf p.1) および実施マニュアル(docs/evidence/manual_main.pdf p.46-47) の判定基準文を転記して導出したもので、実装の出力を採録したものではない。
+# purpose: R5-1 層1 (決定論) のゴールドセット。evals/run_deterministic.py と evals/assert_scoring.py が同じ行を読む。
+# columns:
+#   case_id / variant=57|23 / category / description
+#   answers      = 生回答を項目番号順に半角スペース区切り。"-" は無回答(欠損)。逆転換算前の値。
+#   expected_error = 非空なら score() が その例外型 を送出することが期待値 (この行では他の期待列は空)
+#   expected_valid / expected_missing (欠損項目番号・空なら無し)
+#   expected_A / expected_B / expected_C = 逆転換算後の領域合計 (欠損行では部分合計)
+#   expected_high_stress / expected_rule_hit = none|B_only(㋐)|AC_and_B(㋑)
+#   naive_high_stress = 逆転換算を忘れた実装が出す判定。expected_high_stress と食い違う行が
+#                       「逆転項目が効いている」ことの証拠になる (run_deterministic.py が本数を数える)。
+#   __expected   = promptfoo 用アサーション参照
+case_id,variant,category,description,answers,expected_error,expected_valid,expected_missing,expected_A,expected_B,expected_C,expected_high_stress,expected_rule_hit,naive_high_stress,__expected
+S57-A-01,57,criterion_a_boundary,㋐直下: B=76・A+C=50 → 非該当,1 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 3 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2,,true,,30,76,20,false,none,false,python:file://assert_scoring.py
+S57-A-02,57,criterion_a_boundary,㋐ちょうど: B=77・A+C=50 → 高ストレス(㋐),1 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2,,true,,30,77,20,true,B_only,false,python:file://assert_scoring.py
+S57-A-03,57,criterion_a_boundary,㋐直上: B=78・A+C=50 → 高ストレス(㋐),1 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2,,true,,30,78,20,true,B_only,false,python:file://assert_scoring.py
+S57-A-04,57,criterion_a_boundary,㋐のみで成立: A+C=26(最小)・B=77 → 高ストレス(㋐),4 4 4 4 4 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2,,true,,17,77,9,true,B_only,false,python:file://assert_scoring.py
+S57-B-01,57,criterion_b_boundary,㋑ 2x2: A+C=75・B=62 → 非該当,1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 2 1 1 1 2 2,,true,,50,62,25,false,none,false,python:file://assert_scoring.py
+S57-B-02,57,criterion_b_boundary,㋑ 2x2: A+C=75・B=63 → 非該当(A+Cが1点不足),1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 2 1 1 1 2 2,,true,,50,63,25,false,none,false,python:file://assert_scoring.py
+S57-B-03,57,criterion_b_boundary,㋑ 2x2: A+C=76・B=62 → 非該当(Bが1点不足),1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,50,62,26,false,none,false,python:file://assert_scoring.py
+S57-B-04,57,criterion_b_boundary,㋑ 2x2: A+C=76・B=63 → 高ストレス(㋑),1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,50,63,26,true,AC_and_B,false,python:file://assert_scoring.py
+S57-B-05,57,criterion_b_boundary,㋑直上: A+C=77・B=64 → 高ストレス(㋑),1 1 1 1 1 1 1 4 4 4 1 3 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,51,64,26,true,AC_and_B,false,python:file://assert_scoring.py
+S57-B-06,57,criterion_b_boundary,㋑のANDを検査: A+C=104(最大)・B=62 → 非該当 (Bの下限は免除されない),1 1 1 1 1 1 1 4 4 4 1 1 1 4 1 4 4 1 1 1 4 4 4 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 4 4 4 4 2 2,,true,,68,62,36,false,none,false,python:file://assert_scoring.py
+S57-B-07,57,criterion_b_boundary,㋑のANDを検査: A+C=26(最小)・B=76 → 非該当 (㋐にも㋑にも届かない),4 4 4 4 4 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2,,true,,17,76,9,false,none,false,python:file://assert_scoring.py
+S57-O-01,57,rule_order,㋐と㋑が同時成立: B=77・A+C=76 → rule_hit は原典の記載順で㋐(B_only),1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,50,77,26,true,B_only,false,python:file://assert_scoring.py
+S57-O-02,57,rule_order,㋑のみ成立: B=76・A+C=76 → rule_hit=AC_and_B,1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 3 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,50,76,26,true,AC_and_B,false,python:file://assert_scoring.py
+S57-X-01,57,extreme,全項目が最小換算 A=17/B=29/C=9 → 非該当,4 4 4 4 4 4 4 1 1 1 4 4 4 1 4 1 1 4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2,,true,,17,29,9,false,none,false,python:file://assert_scoring.py
+S57-X-02,57,extreme,全項目が最大換算 A=68/B=116/C=36 → 高ストレス(㋐),1 1 1 1 1 1 1 4 4 4 1 1 1 4 1 4 4 1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 2 2,,true,,68,116,36,true,B_only,true,python:file://assert_scoring.py
+S57-X-03,57,extreme,生回答が全て1 → 逆転換算後 A=50/B=38/C=9 → 非該当,1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1,,true,,50,38,9,false,none,false,python:file://assert_scoring.py
+S57-X-04,57,extreme,生回答が全て4 → 逆転換算後 A=35/B=107/C=36 → 高ストレス(㋐),4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4,,true,,35,107,36,true,B_only,true,python:file://assert_scoring.py
+S57-R-01,57,reversal_effect,"逆転を適用すると㋑成立(A+C=76,B=63)、適用し忘れると非該当になる回答",1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,50,63,26,true,AC_and_B,false,python:file://assert_scoring.py
+S57-R-02,57,reversal_effect,逆転を適用すると非該当(B=76)、適用し忘れると㋐成立(B=85)になる回答,4 4 4 4 4 4 4 1 1 1 4 4 4 1 4 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 3 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2,,true,,17,76,9,false,none,true,python:file://assert_scoring.py
+S57-R-03,57,reversal_effect,逆転項目1問だけ差し替え: S57-B-04 の項目1を そうだ(1) から ちがう(4) へ → A が3点下がり㋑不成立,4 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,true,,47,63,26,false,none,false,python:file://assert_scoring.py
+S57-M-01,57,missing,採点対象1問(項目30)欠損 → valid=false・high_stress=false (補完しない),1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 - 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 2 2,,false,30,50,62,26,false,none,false,python:file://assert_scoring.py
+S57-M-02,57,missing,欠損が無ければ㋐成立する回答から項目18を欠損 → 判定を確定させない,1 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 - 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2,,false,18,30,86,20,false,none,false,python:file://assert_scoring.py
+S57-M-03,57,missing,3問欠損(1・30・55) → valid=false,- 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 - 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 - 2 2,,false,1 30 55,46,62,25,false,none,false,python:file://assert_scoring.py
+S57-M-04,57,missing,採点対象55問すべて欠損 → valid=false・partial sums は 0,- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 2 2,,false,1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55,0,0,0,false,none,false,python:file://assert_scoring.py
+S57-M-05,57,missing,満足度(項目56・57)のみ欠損 → 採点対象外なので valid=true・判定は成立,1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 4 4 3 1 1 1 - -,,true,,50,63,26,true,AC_and_B,false,python:file://assert_scoring.py
+S57-M-06,57,missing,満足度2問と採点対象1問(項目47)が欠損 → 採点対象の欠損だけが missing に出る,1 1 1 1 1 1 1 4 4 4 1 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 - 4 4 4 4 3 1 1 1 - -,,false,47,50,63,22,false,none,false,python:file://assert_scoring.py
+S57-E-01,57,validation,項目1に 0 → ValueError,0 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2,ValueError,,,,,,,,,python:file://assert_scoring.py
+S57-E-02,57,validation,項目1に 5 → ValueError,5 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2,ValueError,,,,,,,,,python:file://assert_scoring.py
+S57-E-03,57,validation,57項目版に存在しない項目58が含まれる → ValueError,1 1 1 1 3 4 4 1 1 1 4 4 4 1 4 1 1 1 1 1 4 4 4 4 4 4 4 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 4 4 4 3 1 1 1 1 1 2 2 3,ValueError,,,,,,,,,python:file://assert_scoring.py
+S23-A-01,23,criterion_a_boundary,㋐直下: B=30・A+C=20 → 非該当,1 3 4 1 1 1 4 4 4 4 4 4 2 1 1 1 1 4 2 1 1 1 1,,true,,10,30,10,false,none,false,python:file://assert_scoring.py
+S23-A-02,23,criterion_a_boundary,㋐ちょうど: B=31・A+C=20 → 高ストレス(㋐),1 3 4 1 1 1 4 4 4 4 4 4 3 1 1 1 1 4 2 1 1 1 1,,true,,10,31,10,true,B_only,true,python:file://assert_scoring.py
+S23-A-03,23,criterion_a_boundary,㋐直上: B=32・A+C=20 → 高ストレス(㋐),1 3 4 1 1 1 4 4 4 4 4 4 4 1 1 1 1 4 2 1 1 1 1,,true,,10,32,10,true,B_only,true,python:file://assert_scoring.py
+S23-B-01,23,criterion_b_boundary,㋑ 2x2: A+C=38・B=22 → 非該当,1 1 1 4 2 1 4 4 4 3 1 1 1 1 1 1 1 4 4 4 4 2 1,,true,,19,22,19,false,none,false,python:file://assert_scoring.py
+S23-B-02,23,criterion_b_boundary,㋑ 2x2: A+C=38・B=23 → 非該当,1 1 1 4 2 1 4 4 4 4 1 1 1 1 1 1 1 4 4 4 4 2 1,,true,,19,23,19,false,none,false,python:file://assert_scoring.py
+S23-B-03,23,criterion_b_boundary,㋑ 2x2: A+C=39・B=22 → 非該当,1 1 1 4 3 1 4 4 4 3 1 1 1 1 1 1 1 4 4 4 4 2 1,,true,,20,22,19,false,none,false,python:file://assert_scoring.py
+S23-B-04,23,criterion_b_boundary,㋑ 2x2: A+C=39・B=23 → 高ストレス(㋑),1 1 1 4 3 1 4 4 4 4 1 1 1 1 1 1 1 4 4 4 4 2 1,,true,,20,23,19,true,AC_and_B,false,python:file://assert_scoring.py
+S23-B-05,23,criterion_b_boundary,㋑のANDを検査: A+C=48(最大)・B=22 → 非該当,1 1 1 4 4 4 4 4 4 3 1 1 1 1 1 1 1 4 4 4 4 4 4,,true,,24,22,24,false,none,false,python:file://assert_scoring.py
+S23-O-01,23,rule_order,㋐と㋑が同時成立: B=31・A+C=39 → rule_hit=B_only,1 1 1 4 3 1 4 4 4 4 4 4 3 1 1 1 1 4 4 4 4 2 1,,true,,20,31,19,true,B_only,true,python:file://assert_scoring.py
+S23-X-01,23,extreme,全項目が最小換算 A=6/B=11/C=6 → 非該当,4 4 4 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1,,true,,6,11,6,false,none,false,python:file://assert_scoring.py
+S23-X-02,23,extreme,全項目が最大換算 A=24/B=44/C=24 → 高ストレス(㋐),1 1 1 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4,,true,,24,44,24,true,B_only,true,python:file://assert_scoring.py
+S23-X-03,23,extreme,生回答が全て1 → 逆転換算後 A=15/B=11/C=6 → 非該当,1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1,,true,,15,11,6,false,none,false,python:file://assert_scoring.py
+S23-X-04,23,extreme,生回答が全て4 → 逆転換算後 A=15/B=44/C=24 → 高ストレス(㋐),4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4,,true,,15,44,24,true,B_only,true,python:file://assert_scoring.py
+S23-R-01,23,reversal_effect,"逆転を適用すると㋑成立(A+C=39,B=23)、適用し忘れると非該当になる回答",1 1 1 1 1 1 4 4 4 4 1 1 1 1 1 1 1 4 4 4 4 4 4,,true,,15,23,24,true,AC_and_B,false,python:file://assert_scoring.py
+S23-R-02,23,reversal_effect,逆転項目1問だけ差し替え: S23-B-04 の項目1を そうだ(1) から ちがう(4) へ → ㋑不成立,4 1 1 4 3 1 4 4 4 4 1 1 1 1 1 1 1 4 4 4 4 2 1,,true,,17,23,19,false,none,false,python:file://assert_scoring.py
+S23-M-01,23,missing,採点対象1問(項目12)欠損 → valid=false,1 1 1 4 3 1 4 4 4 4 1 - 1 1 1 1 1 4 4 4 4 2 1,,false,12,20,22,19,false,none,false,python:file://assert_scoring.py
+S23-M-02,23,missing,23項目版は全問が採点対象 = 満足度項目が無い。全問欠損 → valid=false・sums は 0,- - - - - - - - - - - - - - - - - - - - - - -,,false,1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23,0,0,0,false,none,false,python:file://assert_scoring.py
+S23-E-01,23,validation,項目23に 5 → ValueError,1 3 4 1 1 1 4 4 4 1 1 1 1 1 1 1 1 4 2 1 1 1 5,ValueError,,,,,,,,,python:file://assert_scoring.py
